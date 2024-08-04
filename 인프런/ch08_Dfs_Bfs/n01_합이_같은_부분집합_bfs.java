@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-public class n01_합이_같은_부분집합 {
+public class n01_합이_같은_부분집합_bfs {
 
     public String solution(int sum, int[] arr) {
         Queue<Integer> q = new LinkedList<>();
@@ -36,7 +36,7 @@ public class n01_합이_같은_부분집합 {
             arr[i] = sc.nextInt();
             sum += arr[i];
         }
-        n01_합이_같은_부분집합 t = new n01_합이_같은_부분집합();
+        n01_합이_같은_부분집합_bfs t = new n01_합이_같은_부분집합_bfs();
         System.out.println(t.solution(sum, arr));
 
     }
