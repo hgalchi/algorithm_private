@@ -1,6 +1,6 @@
 package algorithm_private.codeKata;
 
-public class 자리수_구하기 {
+public class n03_자리수_구하기 {
     int solution(int n) {
         int answer = 0;
 
