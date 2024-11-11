@@ -1,71 +1,70 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int n;
-    static boolean[][] map;
-    static boolean[][] visited;
-    static int dx[] = {-1, 1, 0, 0};
-    static int dy[] = {0, 0, -1, 1};
-    static List<Integer> nums;
-    static int c;
+
+    static int[] dr = {0,0,1,-1};
+    static int[] dc = {1, -1, 0, 0};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(br.readLine());
+        int[][] map = new int[N][N];
 
-        map = new boolean[n][n];
-        visited = new boolean[n][n];
-        nums = new ArrayList<>();
-        c = 0;
+        for (int i = 0; i < N; i++) {
+            String line = br.readLine();
+            for (int j = 0; j < N; j++) {
+                map[i][j] = line.charAt(j) - '0';
+            }
+        }
+        List<Integer> list = new ArrayList<>();
 
-        for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            String a = st.nextToken();
-            for (int j = 0; j < n; j++) {
-                char c = a.charAt(j);
-                if (c != '0') {
-                    map[i][j] = true;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (map[i][j] == 1) {
+                    int areaSize  = 0;
+                    Deque<int[]> dq = new LinkedList<>();
+                    dq.add(new int[]{i, j});
+                    map[i][j] = 0;
+
+                    //dfs로 접근할 수 있는 모든 행을 탐색한다.
+                    while (!dq.isEmpty()) {
+                        int[] current=dq.poll();
+                        areaSize++;
+                        // 상하좌우 탐색 bfs
+                        for (int k = 0; k < 4; k++) {
+                            int row = current[0] + dr[k];
+                            int col = current[1] + dc[k];
+                            if (row < N && row >= 0 && col < N && col >= 0 && map[row][col] == 1) {
+                                dq.add(new int[]{row, col});
+                                map[row][col] = 0;
+                            }
+                        }
+                    }
+                    list.add(areaSize);
                 }
             }
         }
 
-        int count = 0;
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (!visited[i][j] && map[i][j]) {
-                    dfs(i, j);
-                    count++;
-                    nums.add(c);
-                    c = 0;
-                }
+        StringBuilder st = new StringBuilder();
+        st.append(list.size()).append("\n");
+        list.sort(Integer::compareTo);
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) != 0) {
+                st.append(list.get(i)).append("\n");
             }
         }
 
-        System.out.println(count);
-        Collections.sort(nums);
-        for (Integer num : nums) {
-            System.out.println(num + 1);
-        }
+        System.out.println(st);
+
     }
 
-    private static void dfs(int x, int y) {
-        visited[x][y] = true;
-
-        for (int i = 0; i < 4; i++) {
-            int nowX = x + dx[i];
-            int nowY = y + dy[i];
-
-            if (nowX >= 0 && nowY >= 0 && nowX < n && nowY < n) {
-                if (!visited[nowX][nowY] && map[nowX][nowY]) {
-                    dfs(nowX, nowY);
-                    c++;
-                }
-            }
-        }
-    }
 }
