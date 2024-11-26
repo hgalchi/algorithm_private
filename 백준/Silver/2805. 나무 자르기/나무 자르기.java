@@ -16,7 +16,7 @@ public class Main {
         int M = Integer.parseInt(st.nextToken());
 
         int[] arr = new int[N];
-        int high = 0,low=0;
+        long high = 0,low=0;
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
@@ -24,8 +24,8 @@ public class Main {
             high = Math.max(high, arr[i]);
         }
 
-        while (low < high) {
-            int mid = (low + high) / 2;
+        while (low+1 < high) {
+            long mid = (low + high) / 2;
             long sum = 0;
             for(int tree:arr){
                 //절단기 높이보다 나무 높이가 더 크다면
@@ -38,10 +38,10 @@ public class Main {
                 //절단기의 길이를 줄인다.
                 high = mid;
             } else {
-                low = mid + 1;
+                low = mid;
             }
         }
-        System.out.println(low-1);
+        System.out.println(low);
     }
 
 }
