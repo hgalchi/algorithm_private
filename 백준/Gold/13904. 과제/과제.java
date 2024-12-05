@@ -1,63 +1,54 @@
 
-import java.util.Comparator;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.PriorityQueue;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        PriorityQueue<Subject> pq = new PriorityQueue<>();
-        for (int i = 0; i < n; i++) {
-            pq.offer(new Subject(sc.nextInt(), sc.nextInt()));
-        }
-        
-        int size=pq.stream().reduce((x,y)->x.getD()>y.getD()?x:y).get().getD();
-        //가장 마지막 마감일 d만큼의 크기만큼 배열 할당
-        int[] arr=new int[size];
-        int sum = 0;
+    static class Node{
+        int score;
+        int day;
 
-        for (int i = 0; i < n; i++) {
-            int num = pq.peek().getW();
-            int day = pq.peek().getD();
-            if (arr[day-1] == 0) {
-                sum += num;
-                arr[day-1] = 1;
-            }else{
-                //마감일까지 과제를 해결할 수 있는 날이 있다면
-                for (int j = day-1; j >= 0; j--) {
-                    if(arr[j]==0) {
-                        sum += num;
-                        arr[j] = 1;
-                        break;
-                    }
+        public Node(int day, int score) {
+            this.day = day;
+            this.score = score;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+
+        //과제의 점수를 기준으로 내림차순 정렬
+        PriorityQueue<Node> q = new PriorityQueue<>((x, y) ->  y.score-x.score);
+        StringTokenizer st;
+
+        int max = 0;
+        while (N-- > 0) {
+            st = new StringTokenizer(br.readLine());
+            int day = Integer.parseInt(st.nextToken());
+            int score= Integer.parseInt(st.nextToken());
+            q.offer(new Node(day, score));
+            max = Math.max(max, day);
+        }
+        //마감일을 기준으로 과제를 수행할 수 있는지 여부를 저장
+        boolean[] arr = new boolean[max+1];
+
+        int answer = 0;
+        while (!q.isEmpty()) {
+            Node node = q.poll();
+            //마감일부터 1일까지 역순으로 탐색하여 과제를 수행할 수 있는 날을 찾음
+            for (int i = node.day; i > 0; i--) {
+                if (!arr[i]) {
+                    answer += node.score;
+                    //과제를 수행하는 데 하루를 사용
+                    arr[i] = true;
+                    break;
                 }
             }
-            pq.poll();
         }
-        System.out.println(sum);
-
-    }
-}
-
-class Subject implements Comparable<Subject> {
-    int d, w;
-
-    public Subject(int d, int w) {
-        this.d = d;
-        this.w = w;
+        System.out.println(answer);
     }
 
-    public int getD() {
-        return d;
-    }
-
-    public int getW() {
-        return w;
-    }
-
-    @Override
-    public int compareTo(Subject s) {
-        return s.getW()-this.w;
-    }
 }
