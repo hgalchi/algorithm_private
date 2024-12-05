@@ -11,21 +11,12 @@ class Solution {
         int answer=0;
         
         //시간복잡도 NlogN
-        while(!q.isEmpty()){
+        while(q.peek()<K&&q.size()>1){
             //스코빌 지수를 비교
-            if(q.peek()<K){
                 answer++;
                 sum=q.poll()+(q.poll()*2);
                 q.offer(sum);
-            }else{
-                return answer;
-            }
-            if(q.size()==1){
-                if(q.peek()<K){
-                    return -1;
-                }
-            }
         }
-        return -1;
+        return q.peek()>=K?answer:-1;
     }
 }
