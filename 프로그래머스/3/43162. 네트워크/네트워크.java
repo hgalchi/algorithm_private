@@ -1,25 +1,41 @@
 import java.util.*;
 class Solution {
+    int[] root;
+    public int find(int x){
+        if(root[x]==x){
+            return x;
+        }return find(root[x]);
+    }
+    public void union(int x,int y){
+        x=find(x);
+        y=find(y);
+        if(x>y){
+            root[x]=y;
+        }else{
+            root[y]=x;
+        }
+    }
     public int solution(int n, int[][] computers) {
-        boolean[] visited=new boolean[n];
-        int answer=0;
-      
+        root=new int[n];
         for(int i=0;i<n;i++){
-            if(!visited[i]){
-                answer++;
-                Queue<Integer> q=new LinkedList<>();
-                q.offer(i);
-                while(!q.isEmpty()){
-                    int row =q.poll();
-                    for(int col=0;col<n;col++){
-                        if(computers[row][col]==1&&!visited[col]){
-                            visited[row]=true;
-                            q.offer(col);
-                        }
-                    }
+            root[i]=i;
+        }
+        
+        for(int row=0;row<n;row++){
+            for(int col=0;col<n;col++){
+                if(computers[row][col]==1){
+                    union(row,col);
                 }
             }
-            
-        }return answer;
+        }
+        
+        for(int i=0;i<n;i++){
+            root[i]=find(i);
+        }
+        HashSet<Integer> set=new HashSet<>();
+        for(int i=0;i<n;i++){
+            set.add(root[i]);
+        }
+        return set.size();
     }
 }
