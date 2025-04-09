@@ -1,33 +1,28 @@
-import java.util.*;
 class Solution {
     public String solution(String video_len, String pos, String op_start, String op_end, String[] commands) {
-        int len=Integer.parseInt(video_len.replace(":",""));
-        Integer cur=Integer.parseInt(pos.replace(":",""));
-        int start=Integer.parseInt(op_start.replace(":",""));
-        int end=Integer.parseInt(op_end.replace(":",""));
+        int video_ss=toConvertSec(video_len);
+        int pos_ss=toConvertSec(pos);
+        int start_ss=toConvertSec(op_start);
+        int end_ss=toConvertSec(op_end);
         
         for(String command:commands){
-            if(start<=cur&&cur<=end){
-                cur=end;
-            }
+        if(pos_ss>=start_ss&&pos_ss<=end_ss){
+            pos_ss=end_ss;
+        }
             if(command.equals("next")){
-                cur+=10;
-                if(cur%100>=60) cur+=40;
-                if(cur>=len) cur=len;
+                pos_ss=pos_ss+10>video_ss?video_ss:pos_ss+10;
             }else{
-                cur-=10;
-                if(cur%100>=60) cur-=40;
-                if(cur<=0) cur=0;
+                pos_ss=pos_ss-10<0?0:pos_ss-10;
             }
         }
-         if(start<=cur&&cur<=end){
-                cur=end;
-            }
-        String cur_time=cur.toString();
-        while(cur_time.length()<4){
-            cur_time="0"+cur_time;
+        if(pos_ss>=start_ss&&pos_ss<=end_ss){
+            pos_ss=end_ss;
         }
-        String answer=cur_time.substring(0,2)+":"+cur_time.substring(2,4);
-        return answer;
+        return String.format("%02d:%02d",pos_ss/60,pos_ss%60);
+        
+    }
+    private int toConvertSec(String time){
+        String[] str=time.split(":");
+        return Integer.parseInt(str[0])*60+Integer.parseInt(str[1]);
     }
 }
