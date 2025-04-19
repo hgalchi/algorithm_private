@@ -1,3 +1,4 @@
+import java.util.*;
 class Solution {
     int[] disr=new int[] {1,-1,0,0};
     int[] disc=new int[] {0,0,1,-1};
@@ -5,22 +6,15 @@ class Solution {
         
         char[][] map=new char[storage.length][storage[0].length()];
         for(int i=0;i<storage.length;i++){
-            for(int j=0;j<storage[0].length();j++){
-                map[i][j]=storage[i].charAt(j);
-            }
-        }
-        
-        
-        char[][] moveMap=new char[storage.length][storage[0].length()];
-        for(int i=0;i<map.length;i++){
-            moveMap[i]=map[i].clone();
+            map[i]=storage[i].toCharArray();
         }
             
         for(String request:requests){
+            List<int[]> removeContainer=new ArrayList<>();
             if(request.length()==2){
                 for(int i=0;i<map.length;i++){
                     for(int j=0;j<map[0].length;j++){
-                        if(map[i][j]==request.charAt(0)) moveMap[i][j]='0';
+                        if(map[i][j]==request.charAt(0)) removeContainer.add(new int[]{i,j});
                     }
                 }
             }else{
@@ -28,14 +22,14 @@ class Solution {
                     for(int j=0;j<map[0].length;j++){
                         if(map[i][j]==request.charAt(0)){
                             boolean[][] visited=new boolean[map.length][map[0].length];
-                            if(dfs(i,j,map,visited)) moveMap[i][j]='0';
+                            if(dfs(i,j,map,visited)) removeContainer.add(new int[]{i,j});
                         }
                         
                     }
                 }
             }
-            for(int i=0;i<map.length;i++){
-                map[i]=moveMap[i].clone();
+            for(int[] container:removeContainer){
+                map[container[0]][container[1]]='0';
             }
         }
         int answer=0;
