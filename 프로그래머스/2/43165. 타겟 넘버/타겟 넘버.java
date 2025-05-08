@@ -1,28 +1,21 @@
+import java.util.*;
 class Solution {
-    static int anwser=0;
-    static int[] numbers;
-    static int target;
-    static int sum=0;
-    static int level=0;
-    static int answer=0;
+    int[] numbers;
+    int target;
+    int count=0;
     
-    public int solution(int[] n, int t) {
-        this.numbers=n;
-        this.target=t;
-        
-        dfs(sum,level);
-        return answer;
+    public int solution(int[] numbers, int target) {
+        this.numbers=numbers;
+        this.target=target;
+        dfs(0,0);
+        return count;
     }
-    
-    public void dfs(int sum,int level){
+    private void dfs(int level,int sum){
         if(level==numbers.length){
-            if(sum==target){
-                answer++;
-            }return;
+            if(sum==target) count++;
+            return;
         }
-            
-                dfs(sum-numbers[level],level+1);
-                dfs(sum+numbers[level],level+1);
-        
+        dfs(level+1,sum+numbers[level]);
+        dfs(level+1,sum-numbers[level]);
     }
 }
