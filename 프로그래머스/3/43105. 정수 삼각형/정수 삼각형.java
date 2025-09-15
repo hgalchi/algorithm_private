@@ -1,33 +1,23 @@
 import java.util.*;
 class Solution {
     public int solution(int[][] triangle) {
-        //dp[현재 위치]=가장 큰 값
-        int[][] dp=new int[triangle.length][triangle.length];
-        
-        //depth 0초기화
+        int n=triangle.length;
+        int[][] dp=new int[n][n];
         dp[0][0]=triangle[0][0];
         
-        //depth 1부터 탐색
-        for(int row=1;row<triangle.length;row++){
-            for(int col=0;col<=row;col++){
-                int left=0;
-                int right=0;
-                if(col-1>=0){
-                    left=dp[row-1][col-1];
-                }
-                if(col<=row-1){
-                    right=dp[row-1][col];
-                }
-                dp[row][col]=Math.max(left,right)+triangle[row][col];
+        for(int i=0;i<triangle.length-1;i++){
+            for(int j=0;j<=i;j++){
+                //왼쪽
+                dp[i+1][j]=Math.max(dp[i+1][j],dp[i][j]+triangle[i+1][j]);
+                //오른쪽
+                dp[i+1][j+1]=Math.max(dp[i+1][j+1],dp[i][j]+triangle[i+1][j+1]);
             }
         }
         
-        //Integer[] max=dp[triangle.length-1];
-        //Arrays.sort(max,(x,y)->y-x);
         int max=0;
-        for(int i:dp[triangle.length-1]){
-            max=Math.max(max,i);
+        for(int i=0;i<n;i++){
+            max=Math.max(max,dp[dp.length-1][i]);
         }
-        return max;     
+        return max;
     }
 }
