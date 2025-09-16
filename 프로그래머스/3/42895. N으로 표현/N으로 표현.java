@@ -1,28 +1,38 @@
 import java.util.*;
+
 class Solution {
-    static int N,number,min;
     public int solution(int N, int number) {
-        Solution.N=N;
-        Solution.number=number;
-        min=Integer.MAX_VALUE;
-        dfs(0,0);
-        return min>8?-1:min;
-    }
-    public void dfs(int cur,int count){
-        if(count>8) return;
-        if(cur==number){
-            min=Math.min(min,count);
-            return;
+        if (N == number) return 1;
+
+        Map<Integer, Set<Integer>> dp = new HashMap<>();
+        dp.put(1, new HashSet<>(Arrays.asList(N)));
+
+        for (int i = 2; i <= 8; i++) {
+            Set<Integer> list = new HashSet<>();
+
+            // N 이어붙인 숫자 (55, 555, ...)
+            int concat = 0;
+            for (int k = 0; k < i; k++) {
+                concat = concat * 10 + N;
+            }
+            list.add(concat);
+
+            // dp[j] 와 dp[i-j]의 조합
+            for (int j = 1; j < i; j++) {
+                for (int a : dp.get(j)) {
+                    for (int b : dp.get(i - j)) {
+                        list.add(a + b);
+                        list.add(a - b);
+                        list.add(a * b);
+                        if (b != 0) list.add(a / b);
+                    }
+                }
+            }
+
+            if (list.contains(number)) return i;
+            dp.put(i, list);
         }
-       
-        int concat=0;
-        for(int i=0;i<8-count;i++){
-            concat=concat*10+N;
-            dfs(cur+concat,count+1+i);
-            dfs(cur-concat,count+1+i);
-            dfs(cur *concat,count+1+i);
-            if(concat!=0) dfs(cur/concat,count+1+i);
-        }
-        
+
+        return -1;
     }
 }
