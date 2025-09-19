@@ -1,43 +1,49 @@
 import java.util.*;
-
 class Solution {
+    static int answer=Integer.MAX_VALUE;
+    static String target;
+    static String[] words;
     public int solution(String begin, String target, String[] words) {
-        if (!Arrays.asList(words).contains(target)) return 0;
-
-        Queue<String> queue = new LinkedList<>();
-        Set<String> visited = new HashSet<>();
-
-        queue.add(begin);
-        visited.add(begin);
-
-        int level = 0;
-
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            level++;
-
-            for (int i = 0; i < size; i++) {
-                String cur = queue.poll();
-
-                for (String word : words) {
-                    if (!visited.contains(word) && canTransform(cur, word)) {
-                        if (word.equals(target)) return level;
-                        visited.add(word);
-                        queue.add(word);
-                    }
-                }
-            }
+        Solution.target=target;
+        Solution.words=words;
+        Map<String,Boolean> visited=new HashMap<>();
+        for(String word:words){
+            visited.put(word,false);
         }
-
-        return 0;
+        
+        dfs(begin,0,visited);
+        return answer==Integer.MAX_VALUE?0:answer;
     }
-
-    private boolean canTransform(String a, String b) {
-        int count = 0;
-        for (int i = 0; i < a.length(); i++) {
-            if (a.charAt(i) != b.charAt(i)) count++;
-            if (count > 1) return false;
+    
+    public void dfs(String cur,int count,Map<String,Boolean> visited){
+        if(cur.equals(target)){
+            answer=Math.min(answer,count);
+            return;
         }
-        return count == 1;
+        List<String> list=changeWord(cur,visited);
+        
+        for(String next:list){
+            visited.put(next,true);
+            dfs(next,count+1,visited);
+            visited.put(next,false);
+        }
+    }
+    
+    
+    public List<String> changeWord(String begin,Map<String,Boolean> map){
+        List<String> list=new ArrayList<>();
+        for(String word:words){
+            if(!map.get(word)){
+                char[] start=begin.toCharArray();
+                char[] end=word.toCharArray();
+                int num=0;
+                for(int i=0;i<begin.length();i++){
+                    if(start[i]!=end[i]) num++;
+                }
+                if(num<2) list.add(word);
+            }
+            
+        }
+        return list;
     }
 }
